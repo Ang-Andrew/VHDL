@@ -33,18 +33,19 @@ begin
     
     clk_div : process(i_clk)
     begin
-        if(rising_edge(i_clk) then
+        if(rising_edge(i_clk)) then
             if(current_state = addr_write or current_state = reg_write or current_state = addr_read or current_state = data_1 or current_state = data_2) then
                 if(r_counter = 124) then
                     r_scl <= not r_scl;
                     r_counter <= 0;
                 else
                     r_counter <= r_counter+1;
+                end if;
             else
                 r_counter <= 0;
             end if;
         end if;
-    end process clk_div; 
+    end process; 
     
 
 end Behavioral;
