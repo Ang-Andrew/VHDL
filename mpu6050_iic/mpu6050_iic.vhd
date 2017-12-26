@@ -42,7 +42,8 @@ architecture Behavioral of mpu6050_iic is
     signal r_stop           : std_logic                     := '0'; --for wait state to transtion to stop sda        
     signal r_temp_h_addr    : std_logic_vector(5 downto 0)  := "101001";
     signal r_temp_l_addr    : std_logic_vector(5 downto 0)  := "101010";
-    signal r_data           : std_logic_vector(7 downto 0);
+    signal r_data_1         : std_logic_vector(7 downto 0);
+    signal r_data_2         : std_logic_vector(7 downto 0);
 
 begin   
 
@@ -137,24 +138,26 @@ begin
                     when data_1 =>
                         if(rising_edge(r_scl)) then
                             if r_bit_counter < 9 then  
-                                r_data(r_iic_data_bit) <= r_sda;
+                                r_data_1(r_iic_data_bit) <= r_sda;
                                 r_iic_data_bit <= r_iic_data_bit - 1;
                                 r_bit_counter <= r_bit_counter + 1;
                             else
                                 r_sda <= '0'; -- ack from master to slave
                                 r_bit_counter <= 0;
+                                o_data <= r_data_1; --output data 1
                                 current_state <= data_2;
                             end if ;
                         end if;
                     when data_2 =>
                         if(rising_edge(r_scl)) then
                             if r_bit_counter < 9 then  
-                                r_data(r_iic_data_bit) <= r_sda;
+                                r_data_2(r_iic_data_bit) <= r_sda;
                                 r_iic_data_bit <= r_iic_data_bit - 1;
                                 r_bit_counter <= r_bit_counter + 1;
                             else
                                 r_sda <= '0'; -- ack from master to slave
                                 r_bit_counter <= 0;
+                                o_data <= r_data_2; --output data 2
                                 current_state <= send_nack;
                             end if ;
                         end if;
