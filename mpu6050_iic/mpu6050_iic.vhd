@@ -10,7 +10,8 @@ entity mpu6050_iic is
         i_reset  : in std_logic;
         o_scl    : inout STD_LOGIC;
         o_sda    : inout STD_LOGIC;
-        o_data   : out std_logic_vector(7 downto 0));
+        o_data   : out std_logic_vector(7 downto 0);
+        o_waiter : out std_logic_vector(7 downto 0));
 end mpu6050_iic;
 
 architecture Behavioral of mpu6050_iic is
@@ -30,9 +31,9 @@ architecture Behavioral of mpu6050_iic is
     
     signal current_state    : states                        := idle;
     signal r_counter        : integer range 0 to 124        := 0;
-    signal r_scl            : std_logic                     := '0';
-    signal r_sda            : std_logic                     := '0';
-    signal r_waiter         : integer range 0 to 59         := 0;
+    signal r_scl            : std_logic                     := '1';
+    signal r_sda            : std_logic                     := '1';
+    signal r_waiter         : std_logic_vector(7 downto 0)  := (others => '0');
     signal r_wait_done      : std_logic                     := '0';
     signal r_iic_addr       : std_logic_vector(6 downto 0)  := "1101000";
     signal r_bit_counter    : integer range 1 to 9          := 1;
@@ -49,6 +50,7 @@ begin
 
     o_sda <= r_sda;
     o_scl <= r_scl;
+    o_waiter <= r_waiter;
 
     iic_state_machine : process(i_clk)
     begin
@@ -66,16 +68,20 @@ begin
                         r_scl <= '1';
                         current_state <= waiting;
                     when waiting =>
-                        if(r_wait_done = '1') then
-                            r_wait_done <= '0';
-                            if(r_stop = '1') then
-                                r_stop <= '1';
-                                current_state <= stop_sda;
-                            else
-                                current_state <= start_scl;
+                         if(rising_edge(i_clk)) then
+                            if(r_waiter = 60) then
+                                r_wait_done <= '1';
+                                r_waiter <= (others => '0');
+                                if(r_stop = '1') then
+                                    r_stop <= '1';
+                                    current_state <= stop_sda;
+                                else
+                                    current_state <= start_scl;
+                                end if;
+                            else 
+                                r_waiter <= r_waiter + 1;
+                                current_state <= waiting;
                             end if;
-                        else
-                            current_state <= waiting;
                         end if;
                     when start_scl =>
                         r_scl <= '0';
@@ -196,17 +202,20 @@ begin
         end if;
     end process; 
     
-    waiting_state : process(i_clk)
-    begin
-        if(rising_edge(i_clk) then
-            if(current_state = waiting) then
-                if(r_waiter = 59) then
-                    r_wait_done <= '1';
-                    r_waiter <= 0;
-                else 
-                    r_waiter <= r_waiter + 1;
-            end if;
-        end if;
-    end process;
+    
+    --waiting_state : process(i_clk)
+    --begin
+    --    if(rising_edge(i_clk)) then
+    --        if(current_state = waiting) then
+    --            if(r_waiter = 60) then
+    --                r_wait_done <= '1';
+    --                r_waiter <= (others => '0');
+    --           else 
+    --                r_waiter <= r_waiter + 1;
+    --            end if;
+    --        end if;
+    --    end if;
+    --end process;
+    
 
 end Behavioral;
