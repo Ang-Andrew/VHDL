@@ -11,7 +11,8 @@ entity mpu6050_iic is
         o_scl    : inout STD_LOGIC;
         o_sda    : inout STD_LOGIC;
         o_data   : out std_logic_vector(7 downto 0);
-        o_waiter : out std_logic_vector(7 downto 0));
+        o_waiter : out std_logic_vector(7 downto 0);
+        o_state  : out std_logic_vector(7 downto 0));
 end mpu6050_iic;
 
 architecture Behavioral of mpu6050_iic is
@@ -31,8 +32,8 @@ architecture Behavioral of mpu6050_iic is
     
     signal current_state    : states                        := idle;
     signal r_counter        : integer range 0 to 124        := 0;
-    signal r_scl            : std_logic                     := '1';
-    signal r_sda            : std_logic                     := '1';
+    signal r_scl            : std_logic;
+    signal r_sda            : std_logic;
     signal r_waiter         : std_logic_vector(7 downto 0)  := (others => '0');
     signal r_wait_done      : std_logic                     := '0';
     signal r_iic_addr       : std_logic_vector(6 downto 0)  := "1101000";
@@ -45,12 +46,14 @@ architecture Behavioral of mpu6050_iic is
     signal r_temp_l_addr    : std_logic_vector(5 downto 0)  := "101010";
     signal r_data_1         : std_logic_vector(7 downto 0);
     signal r_data_2         : std_logic_vector(7 downto 0);
+    signal r_state          : std_logic_vector(7 downto 0)  := (others => '0');
 
 begin   
 
     o_sda <= r_sda;
     o_scl <= r_scl;
     o_waiter <= r_waiter;
+    o_state <= r_state;
 
     iic_state_machine : process(i_clk)
     begin
@@ -60,12 +63,16 @@ begin
             else 
                 case(current_state) is 
                     when idle => --wait for i_enable to go high
+                        r_scl <= 'Z';
+                        r_sda <= 'Z';
                         if(i_enable = '1') then
                             current_state <= start_sda;
+                            r_state <= (others => '0');
                         end if;
                     when start_sda =>
                         r_sda <= '0';
                         r_scl <= '1';
+                        r_state <= "00000001";
                         current_state <= waiting;
                     when waiting =>
                          if(rising_edge(i_clk)) then
@@ -76,6 +83,9 @@ begin
                                     r_stop <= '1';
                                     current_state <= stop_sda;
                                 else
+                                    r_scl <= '0';
+                                    r_sda <= '0';
+                                    r_state <= "00000010";
                                     current_state <= start_scl;
                                 end if;
                             else 
@@ -84,11 +94,11 @@ begin
                             end if;
                         end if;
                     when start_scl =>
-                        r_scl <= '0';
                         if(r_addr_written = '1') then
                             r_addr_written <= '0';
                             current_state <= addr_read;
                         else
+                            r_state <= "00000011";
                             current_state <=  addr_write;
                         end if;
                     when addr_write =>
@@ -186,21 +196,21 @@ begin
         end if ;
     end process;
     
-    clk_div : process(i_clk)
-    begin
-        if(rising_edge(i_clk)) then
-            if(current_state = addr_write or current_state = reg_write or current_state = addr_read or current_state = data_1 or current_state = data_2 or current_state = send_nack) then
-                if(r_counter = 124) then
-                    r_scl <= not r_scl;
-                    r_counter <= 0;
-                else
-                    r_counter <= r_counter+1;
-                end if;
-            else
-                r_counter <= 0;
-            end if;
-        end if;
-    end process; 
+    --clk_div : process(i_clk)
+    --begin
+    --    if(rising_edge(i_clk)) then
+    --        if(current_state = addr_write or current_state = reg_write or current_state = addr_read or current_state = data_1 or current_state = data_2 or current_state = send_nack) then
+    --            if(r_counter = 124) then
+    --                r_scl <= not r_scl;
+    --                r_counter <= 0;
+    --            else
+    --                r_counter <= r_counter+1;
+    --            end if;
+    --        else
+    --            r_counter <= 0;
+    --        end if;
+    --    end if;
+    --end process; 
     
     
     --waiting_state : process(i_clk)

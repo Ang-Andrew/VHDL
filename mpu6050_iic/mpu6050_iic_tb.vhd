@@ -16,16 +16,18 @@ architecture Behavioral of mpu6050_iic_tb is
 	        o_scl    : inout STD_LOGIC;
 	        o_sda    : inout STD_LOGIC;
 	        o_data   : out std_logic_vector(7 downto 0);
-	        o_waiter : out std_logic_vector(7 downto 0));
+	        o_waiter : out std_logic_vector(7 downto 0);
+	        o_state	 : out std_logic_vector(7 downto 0));
 	end component mpu6050_iic;
 
 	signal r_enable		: std_logic := '0';
 	signal r_clk 		: std_logic := '0';
 	signal r_reset		: std_logic := '0';
-	signal r_scl		: std_logic;
-	signal r_sda		: std_logic;
+	signal r_scl		: std_logic := 'Z';
+	signal r_sda		: std_logic := 'Z';
 	signal r_data		: std_logic_vector(7 downto 0);
 	signal r_waiter 	: std_logic_vector(7 downto 0);
+	signal r_state		: std_logic_vector(7 downto 0);
 
 	constant clk_period : time	:= 10 ns;
 
@@ -40,7 +42,8 @@ architecture Behavioral of mpu6050_iic_tb is
 			o_scl		=> r_scl,
 			o_sda		=> r_sda,
 			o_data		=> r_data,
-			o_waiter	=> r_waiter
+			o_waiter	=> r_waiter,
+			o_state 	=> r_state
 		);
 
 	r_clk <= not r_clk after clk_period/2;
