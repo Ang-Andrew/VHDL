@@ -47,6 +47,7 @@ architecture Behavioral of mpu6050_iic is
     signal r_data_1         : std_logic_vector(7 downto 0);
     signal r_data_2         : std_logic_vector(7 downto 0);
     signal r_state          : std_logic_vector(7 downto 0)  := (others => '0');
+    signal r_clk_400K       : std_logic                     := '0';
 
 begin   
 
@@ -55,9 +56,9 @@ begin
     o_waiter <= r_waiter;
     o_state <= r_state;
 
-    iic_state_machine : process(i_clk)
+    iic_state_machine : process(r_clk_400K)
     begin
-        if rising_edge(i_clk) then  
+        if rising_edge(r_clk_400K) then  
             if i_reset = '1' then  
                 current_state <= idle;
             else 
@@ -74,26 +75,27 @@ begin
                         r_scl <= '1';
                         r_state <= "00000001";
                         current_state <= waiting;
-                    when waiting =>
-                         if(rising_edge(i_clk)) then
-                            if(r_waiter = 60) then
-                                r_wait_done <= '1';
-                                r_waiter <= (others => '0');
-                                if(r_stop = '1') then
-                                    r_stop <= '1';
-                                    current_state <= stop_sda;
-                                else
-                                    r_scl <= '0';
-                                    r_sda <= '0';
-                                    r_state <= "00000010";
-                                    current_state <= start_scl;
-                                end if;
-                            else 
-                                r_waiter <= r_waiter + 1;
-                                current_state <= waiting;
-                            end if;
-                        end if;
+                    --when waiting =>
+                    --     if(rising_edge(i_clk)) then
+                    --        if(r_waiter = 60) then
+                    --            r_wait_done <= '1';
+                    --            r_waiter <= (others => '0');
+                    --            if(r_stop = '1') then
+                    --                r_stop <= '1';
+                    --                current_state <= stop_sda;
+                    --            else
+                    --                r_scl <= '0';
+                    --                r_sda <= '0';
+                    --                r_state <= "00000010";
+                    --                current_state <= start_scl;
+                    --            end if;
+                    --        else 
+                    --            r_waiter <= r_waiter + 1;
+                    --            current_state <= waiting;
+                    --        end if;
+                    --    end if;
                     when start_scl =>
+                        r_scl <= '0';
                         if(r_addr_written = '1') then
                             r_addr_written <= '0';
                             current_state <= addr_read;
@@ -101,8 +103,10 @@ begin
                             r_state <= "00000011";
                             current_state <=  addr_write;
                         end if;
+                    when addr_prep =>
                     when addr_write =>
-                        if(rising_edge(r_scl)) then
+                        if(rising_edge(r_clk_400M)) then
+                            o_scl <= 
                             if r_bit_counter < 8 then  
                                 r_sda <= r_iic_addr(r_iic_addr_bit);
                                 r_iic_addr <=  r_iic_addr - 1;
@@ -196,21 +200,20 @@ begin
         end if ;
     end process;
     
-    --clk_div : process(i_clk)
-    --begin
-    --    if(rising_edge(i_clk)) then
-    --        if(current_state = addr_write or current_state = reg_write or current_state = addr_read or current_state = data_1 or current_state = data_2 or current_state = send_nack) then
-    --            if(r_counter = 124) then
-    --                r_scl <= not r_scl;
-    --                r_counter <= 0;
-    --            else
-    --                r_counter <= r_counter+1;
-    --            end if;
-    --        else
-    --            r_counter <= 0;
-    --        end if;
-    --    end if;
-    --end process; 
+    clk_div : process(i_clk)
+    begin
+        if(rising_edge(i_clk)) then
+                if(r_counter = 124) then
+                    r_clk_400K <= not r_clk_400K;
+                    r_counter <= 0;
+                else
+                    r_counter <= r_counter+1;
+                end if;
+            else
+                r_counter <= 0;
+            end if;
+        end if;
+    end process; 
     
     
     --waiting_state : process(i_clk)
