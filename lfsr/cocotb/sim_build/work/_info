@@ -1,0 +1,88 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/git_repos/VHDL/lfsr/cocotb/sim_build
+T_opt
+!s110 1537606037
+VleIU]@giV3`WK=4I32AY`2
+Z1 04 4 10 work lfsr behavioral 1
+=1-d0509947e919-5ba60195-211-1d94
+Z2 o-quiet -auto_acc_if_foreign -work work
+Z3 tCvgOpt 0
+n@_opt
+Z4 OL;O;10.5;63
+R0
+T_opt1
+!s110 1537606116
+V>gnVX@kPgcAZNKiF?5Dh:3
+R1
+=1-d0509947e919-5ba601e4-2a8-293c
+R2
+R3
+n@_opt1
+R4
+R0
+T_opt2
+!s110 1537606671
+VBhXGGN;4WlUlbGh=5dli61
+R1
+=1-d0509947e919-5ba6040f-7b-1610
+R2
+R3
+n@_opt2
+R4
+R0
+T_opt3
+Z5 !s110 1537614311
+VSR0KbMCT0`ESRHJjQUE[F0
+R1
+=1-d0509947e919-5ba621e7-33a-1528
+R2
+R3
+n@_opt3
+R4
+Elfsr
+Z6 w1537605536
+Z7 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z8 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z9 8D:/git_repos/VHDL/lfsr/cocotb/../source/lfsr.vhd
+Z10 FD:/git_repos/VHDL/lfsr/cocotb/../source/lfsr.vhd
+l0
+L14
+V20[MP92ELC:VBV76A3BPJ1
+!s100 0LMYnQc9z>kzM[@E7;Z]A2
+Z11 OL;C;10.5;63
+32
+R5
+!i10b 1
+Z12 !s108 1537614311.000000
+Z13 !s90 -reportprogress|300|-work|work|D:/git_repos/VHDL/lfsr/cocotb/../source/lfsr.vhd|
+Z14 !s107 D:/git_repos/VHDL/lfsr/cocotb/../source/lfsr.vhd|
+!i113 0
+Z15 o-work work
+Z16 tExplicit 1 CvgOpt 0
+Abehavioral
+R7
+R8
+DEx4 work 4 lfsr 0 22 20[MP92ELC:VBV76A3BPJ1
+l31
+L26
+VfDWXn64jUf3fOVzl9GaSK1
+!s100 ^ma]<aYf@L[YkHdbTQ[zR2
+R11
+32
+R5
+!i10b 1
+R12
+R13
+R14
+!i113 0
+R15
+R16
