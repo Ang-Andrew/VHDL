@@ -16,10 +16,9 @@ entity lfsr is
         clock               : in std_logic;
         reset               : in std_logic;
         i_enable            : in std_logic;
-        i_seed		    : in std_logic_vector(31 downto 0);    
+        i_seed		        : in std_logic_vector(31 downto 0);    
         i_seed_valid        : in std_logic;
-        o_lfsr_data         : out std_logic_vector(31 downto 0);
-        o_lfsr_valid        : out std_logic
+        o_lfsr_data         : out std_logic_vector(31 downto 0)
     );
 end lfsr;
 
@@ -35,20 +34,28 @@ begin
         if(rising_edge(clock)) then
             if reset = '1' then
                 s_lfsr <= (others => '0');
-                o_lfsr_valid <= '0';
             elsif i_enable = '1' then
                 if i_seed_valid = '1' then
                     s_lfsr <= i_seed;
                 else
-                    s_lfsr <= s_lfsr(31 downto 1) & s_xnor;
-                    o_lfsr_data <= s_lfsr;
-                    o_lfsr_valid <= '1';
+                    for i in 0 to 31 loop
+                        if(i = 0) then
+                            s_lfsr(0) <= s_lfsr(31) xnor s_lfsr(21) xnor s_lfsr(1) xnor s_lfsr(0);
+                        else
+                            s_lfsr(i) <= s_lfsr(i-1);
+                        end if;
+                    end loop;
                 end if;
             end if;
         end if;
     end process;
     
-    -- xnor calculation based on Xilinx's Linear feedback shift register taps XAPP052 page 5
-    s_xnor <= s_lfsr(31) xnor s_lfsr(21) xnor s_lfsr(1) xnor s_lfsr(0);
+    process(clock) is 
+    begin
+        if(rising_edge(clock)) then
+            o_lfsr_data <= s_lfsr;
+        end if;
+    end process;
+    
     
 end Behavioral;

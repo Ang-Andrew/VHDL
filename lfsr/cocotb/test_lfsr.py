@@ -1,4 +1,4 @@
-# Simple tests for an l module
+# Simple tests for an lfsr module
 import cocotb
 from cocotb.clock import Clock
 from cocotb.triggers import Timer, RisingEdge
@@ -14,10 +14,14 @@ def lfsr_test(dut):
     
     # Drive reset line high, wait then drive low
     dut.reset <= 1
-    yield Timer(100)
+    yield Timer(10)
     dut.reset <= 0
-    
-    yield Timer(100)
+    dut.i_seed <= 0xe54e5a48
+    dut.i_seed_valid <= 1
+    dut.i_enable <= 1
+    yield Timer(10)
+    dut.i_seed_valid <= 0
+    yield Timer(10*1000)
     
     print('Simulation ended')
     
