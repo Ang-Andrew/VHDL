@@ -38,3 +38,6 @@ relaunch_sim
 run 16832 us
 relaunch_sim
 run 16832 us
+relaunch_sim
+run 16832 us
+close_sim
