@@ -51,7 +51,7 @@ architecture Behavioral of uart_tx_tb is
     signal tb_clock             : std_logic;
     signal tb_reset             : std_logic;
     signal tb_serial_out        : std_logic;
-    signal tb_data_in           : std_logic_vector(7 downto 0) := x"AF";
+    signal tb_data_in           : std_logic_vector(7 downto 0);
     signal tb_data_valid        : std_logic := '0';
     signal tb_data_done         : std_logic;
     signal tb_busy              : std_logic;
@@ -81,9 +81,43 @@ begin
     
     stim_proc: process
     begin
+        --h
         wait for clk_period*2;
+        tb_data_in <= x"68";
         tb_data_valid <= '1';
-        
+        --e
+        wait until tb_busy = '0';
+        tb_data_in <= x"65";
+        --l
+        wait until tb_busy = '0';
+        tb_data_in <= x"6c";
+        --l
+        wait until tb_busy = '0';
+        tb_data_in <= x"6c";
+        --o
+        wait until tb_busy = '0';
+        tb_data_in <= x"6f";
+        --[space]
+        wait until tb_busy = '0';
+        tb_data_in <= x"20";
+        --w
+        wait until tb_busy = '0';
+        tb_data_in <= x"77";
+        --o
+        wait until tb_busy = '0';
+        tb_data_in <= x"6f";
+        --r
+        wait until tb_busy = '0';
+        tb_data_in <= x"72";
+        --l
+        wait until tb_busy = '0';
+        tb_data_in <= x"6c";
+        --d
+        wait until tb_busy = '0';
+        tb_data_in <= x"64";
+        --\n
+        wait until tb_busy = '0';
+        tb_data_in <= x"0A";
         wait;
                 
         

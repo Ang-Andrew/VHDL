@@ -106,6 +106,8 @@ begin
                         o_serial_out <= '1';
                         o_data_done <= '1';
                         o_busy <= '0';
+                        s_bit_counter <= 0;
+                        current_state <= s_idle;
                 end case;
             end if;
         end if;
