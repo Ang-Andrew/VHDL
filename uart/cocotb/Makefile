@@ -1,7 +1,7 @@
 TOPLEVEL_LANG ?= vhdl
 
 PWD=$(shell pwd)
-COCOTB=/c/cocotb-6c432ee73
+COCOTB=/c/cocotb
 
 ifeq ($(OS),Msys)
 WPWD=$(shell sh -c 'pwd -W')
