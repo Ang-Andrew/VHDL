@@ -1,4 +1,5 @@
 uart/vivado/
 tmds/tmds_encoder_vivado_proj/
 vga_display/vga_controller/
-uart/cocotb/__pycache__/
+*/cocotb/*/
+uart/ise/
