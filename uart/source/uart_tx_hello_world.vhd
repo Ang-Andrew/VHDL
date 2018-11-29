@@ -7,16 +7,14 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
---! Local libraries
-library work;
-
 --! Entity/Package Description
 entity uart_tx_hello_world is
     port (
         clock               : in std_logic;
         reset               : in std_logic;
+        i_start             : in std_logic;
         o_done              : out std_logic;
-        o_serial_out        : out std_logic;
+        o_serial_out        : out std_logic
     );
 end entity uart_tx_hello_world;
 
@@ -43,15 +41,16 @@ architecture Behavioral of uart_tx_hello_world is
     signal s_serial_out    : std_logic;
     signal s_busy          : std_logic;
     
-    s_byte_counter  :integer range 0 to 12 := 0;
+    signal s_byte_counter         : integer range 0 to 13 := 0;
     
 begin
     
-    uart_tx_1 : entity uart_tx
+    uart_tx_1 : component uart_tx
     port map(
         clock           => clock,
         reset           => reset,
         i_data_in       => s_data_in,
+        i_data_valid    => s_data_valid,
         o_data_done     => s_data_done,
         o_serial_out    => s_serial_out,
         o_busy          => s_busy
@@ -64,61 +63,105 @@ begin
             if(reset = '1') then
                 s_byte_counter <= 0;
             else
-                case s_byte_counter
+                case s_byte_counter is
                     when 0 =>
+                        if(i_start <= '1') then
+                            s_byte_counter <= 1;
+                        end if;
+                    when 1 =>
                         s_data_in <= x"68";
                         s_data_valid <= '1';
-                    when 1 =>
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 2 =>
                         s_data_in <= x"65";
                         s_data_valid <= '1';
-                    when 2 =>
-                        s_data_in <= x"6c";
-                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
                     when 3 =>
                         s_data_in <= x"6c";
                         s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
                     when 4 =>
-                        s_data_in <= x"6f";
-                        s_data_valid <= '1';
-                    when 5 =>
-                        s_data_in <= x"20";
-                        s_data_valid <= '1';
-                    when 6 =>
-                        s_data_in <= x"77";
-                        s_data_valid <= '1';
-                    when 7 =>
-                        s_data_in <= x"6f";
-                        s_data_valid <= '1';
-                    when 8 =>
-                        s_data_in <= x"72";
-                        s_data_valid <= '1';
-                    when 9 =>
                         s_data_in <= x"6c";
                         s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 5 =>
+                        s_data_in <= x"6f";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 6 =>
+                        s_data_in <= x"20";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 7 =>
+                        s_data_in <= x"77";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 8 =>
+                        s_data_in <= x"6f";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 9 =>
+                        s_data_in <= x"72";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
                     when 10 =>
+                        s_data_in <= x"6c";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 11 =>
                         s_data_in <= x"64";
                         s_data_valid <= '1';
-                    when 11 =>
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 12 =>
                         s_data_in <= x"0a";
                         s_data_valid <= '1';
-                    when 12 =>
-                        o_data_done <= '1';
-            end case;
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 13 =>
+                        -- do nothing
+                    when others =>
+                        s_byte_counter <= 1;
+                end case;
+            end if;
         end if;
     end process;
     
-    process(clock,s_data_done)
-    begin
-        if(rising_edge(clock)) then
-            if(s_data_done = '1') then
-                if(s_data_done /= 12) then
-                    s_byte_counter <= s_byte_counter + 1;
-                end if;
-            end if;
-        end if;
-    end if;
+--    process(clock,s_data_done)
+--    begin
+--        if(rising_edge(clock)) then
+--            if(s_data_done = '1') then
+--                if(s_byte_counter /= 12) then
+--                    s_byte_counter <= s_byte_counter + 1;
+--                end if;
+--            end if;
+--        end if;
+--    end process;
     
-    o_serial_out <= s_serial_out;
+    o_serial_out        <= s_serial_out;
+    o_done              <= s_data_done;
     
 
 

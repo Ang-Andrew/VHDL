@@ -33,7 +33,7 @@ use IEEE.STD_LOGIC_1164.ALL;
 
 entity uart_tx is
     generic(
-        cycles_per_bit  : integer := 868
+        cycles_per_bit  : integer := 234 -- for 27MHz on SP601
     );
     Port ( 
         clock               : in std_logic;
