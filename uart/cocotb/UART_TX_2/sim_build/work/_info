@@ -1,0 +1,60 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/git_repos/VHDL/uart/cocotb/UART_TX_2/sim_build
+T_opt
+Z1 !s110 1544006163
+VBngfc7Le5an64`9:^TUMD0
+04 19 10 work uart_tx_hello_world behavioral 1
+=1-d0509947e919-5c07aa13-19e-1880
+o-quiet -auto_acc_if_foreign -work work
+tCvgOpt 0
+n@_opt
+OL;O;10.5;63
+Euart_tx_hello_world
+Z2 w1543617523
+Z3 DPx4 ieee 11 numeric_std 0 22 :ASDNFgHXf_ih3J@9F3Ze1
+Z4 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z5 DPx4 ieee 14 std_logic_1164 0 22 eNV`TJ_GofJTzYa?f<@Oe1
+R0
+Z6 8D:/git_repos/VHDL/uart/cocotb/UART_TX_2/../../source/uart_tx_hello_world.vhd
+Z7 FD:/git_repos/VHDL/uart/cocotb/UART_TX_2/../../source/uart_tx_hello_world.vhd
+l0
+L11
+V;cCd03o@PIkWmPI8ZBg2A1
+!s100 k:ILS393>OlcbA`ZO`9LG2
+Z8 OL;C;10.5;63
+32
+R1
+!i10b 1
+Z9 !s108 1544006163.000000
+Z10 !s90 -work|work|D:/git_repos/VHDL/uart/cocotb/UART_TX_2/../../source/uart_tx_hello_world.vhd|
+Z11 !s107 D:/git_repos/VHDL/uart/cocotb/UART_TX_2/../../source/uart_tx_hello_world.vhd|
+!i113 0
+Z12 o-work work
+Z13 tExplicit 1 CvgOpt 0
+Abehavioral
+R3
+R4
+R5
+DEx4 work 19 uart_tx_hello_world 0 22 ;cCd03o@PIkWmPI8ZBg2A1
+l46
+L21
+VW?L;`4oGjcd@zeE8e@zle1
+!s100 A8S0n=2nPTh97@?G9hBYO2
+R8
+32
+R1
+!i10b 1
+R9
+R10
+R11
+!i113 0
+R12
+R13

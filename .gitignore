@@ -1,5 +1,5 @@
 uart/vivado/
 tmds/tmds_encoder_vivado_proj/
 vga_display/vga_controller/
-*/cocotb/*/
+*/cocotb/*/UART_TX_*/*/
 uart/ise/
