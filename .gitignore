@@ -1,5 +1,6 @@
 uart/vivado/
 tmds/tmds_encoder_vivado_proj/
 vga_display/vga_controller/
-*/cocotb/*/UART_TX_*/*/
+*/cocotb/*/UART_TX_*/__pycache__/
+*/cocotb/*/UART_TX_*/sim_build/
 uart/ise/

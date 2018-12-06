@@ -19,9 +19,9 @@ def uart_tx_test(dut):
     
     # Send data to be sent to UART TX module with valid data input
     
-    dut.i_start <= '1';
+    dut.i_start <= 1;
     yield RisingEdge(dut.o_done)
-   
+
     # Print out serial stream out
     
     yield Timer(2)

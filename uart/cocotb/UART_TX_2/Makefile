@@ -11,16 +11,11 @@ WPWD=$(shell pwd)
 PYTHONPATH := $(WPWD)/../model:$(PYTHONPATH)
 endif
 
-ifeq ($(TOPLEVEL_LANG),verilog)
-    VERILOG_SOURCES = $(WPWD)/../hdl/adder.v
-else ifeq ($(TOPLEVEL_LANG),vhdl)
-    VHDL_SOURCES = $(WPWD)/../../source/uart_tx_hello_world.vhd
-else
-    $(error "A valid value (verilog or vhdl) was not provided for TOPLEVEL_LANG=$(TOPLEVEL_LANG)")
-endif
+VHDL_SOURCES = $(WPWD)/../../source/uart_tx.vhd
+VHDL_SOURCES += $(WPWD)/../../source/uart_tx_hello_world.vhd
 
-TOPLEVEL := uart_tx_hello_world
-MODULE   := test_uart_tx_hello_world_state_machine
+TOPLEVEL = uart_tx_hello_world
+MODULE = test_uart_tx_hello_world_state_machine
 
 include $(COCOTB)/makefiles/Makefile.inc
 include $(COCOTB)/makefiles/Makefile.sim

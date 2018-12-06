@@ -62,6 +62,7 @@ begin
         if(rising_edge(clock)) then
             if(reset = '1') then
                 s_byte_counter <= 0;
+                s_data_valid <= '0';
             else
                 case s_byte_counter is
                     when 0 =>
@@ -141,7 +142,7 @@ begin
                             s_byte_counter <= s_byte_counter + 1;
                         end if;
                     when 13 =>
-                        -- do nothing
+                        o_done <= '1';
                     when others =>
                         s_byte_counter <= 1;
                 end case;
@@ -149,19 +150,7 @@ begin
         end if;
     end process;
     
---    process(clock,s_data_done)
---    begin
---        if(rising_edge(clock)) then
---            if(s_data_done = '1') then
---                if(s_byte_counter /= 12) then
---                    s_byte_counter <= s_byte_counter + 1;
---                end if;
---            end if;
---        end if;
---    end process;
-    
     o_serial_out        <= s_serial_out;
-    o_done              <= s_data_done;
     
 
 
