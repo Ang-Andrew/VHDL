@@ -17,10 +17,5 @@ def spi_master_test(dut):
     yield Timer(100)
     dut.reset <= 0
         
-    yield ClockCycles(dut.clock,1000)
-
-    # Print out serial stream out
-    
-    yield Timer(2)
-    
+    yield Timer(1000)
     print('Simulation ended')

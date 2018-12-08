@@ -53,8 +53,10 @@ architecture Behavioral of uart_tx is
     
     signal s_cycle_counter      : integer range 0  to cycles_per_bit        := 0;
     signal s_bit_counter        : integer range 0 to 7                      := 0;
+    signal s_byte_index         : integer range 0 to 7                      := 7;
     
     signal s_data_in_reg        : std_logic_vector(7 downto 0);
+ 
     
 
 begin
@@ -74,10 +76,11 @@ begin
                         if(i_data_valid = '1') then
                             current_state <= s_start;
                             s_cycle_counter <= s_cycle_counter + 1;
-                            o_serial_out <= '0';
+                            o_serial_out <= '1';
                             o_busy <= '1';
                             o_data_done <= '0';
                             s_data_in_reg <= i_data_in;
+                            s_byte_index <= 7;
                         end if;
                     
                     when s_start =>
@@ -85,6 +88,7 @@ begin
                             s_cycle_counter <= 0;
                             current_state <= s_data;
                         else
+                            o_serial_out <= '0';
                             s_cycle_counter <= s_cycle_counter + 1;
                         end if;
                     
@@ -95,6 +99,7 @@ begin
                             s_cycle_counter <= 0;
                             if(s_bit_counter = 7) then
                                 current_state <= s_stop;
+                                s_cycle_counter <= 0;
                             else
                                 s_bit_counter <= s_bit_counter + 1;
                             end if;
@@ -103,11 +108,16 @@ begin
                         end if;
                     
                     when s_stop =>
-                        o_serial_out <= '1';
-                        o_data_done <= '1';
-                        o_busy <= '0';
-                        s_bit_counter <= 0;
-                        current_state <= s_idle;
+                        if(s_cycle_counter = cycles_per_bit - 1) then
+                            s_cycle_counter <= 0;
+                            current_state <= s_idle;
+                            o_data_done <= '1';
+                            o_busy <= '0';
+                            s_bit_counter <= 0;
+                        else
+                            o_serial_out <= '1';
+                            s_cycle_counter <= s_cycle_counter + 1;
+                        end if;
                 end case;
             end if;
         end if;

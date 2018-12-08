@@ -14,7 +14,8 @@ entity uart_tx_hello_world is
         reset               : in std_logic;
         i_start             : in std_logic;
         o_done              : out std_logic;
-        o_serial_out        : out std_logic
+        o_serial_out        : out std_logic;
+        o_busy              : out std_logic
     );
 end entity uart_tx_hello_world;
 
@@ -41,7 +42,7 @@ architecture Behavioral of uart_tx_hello_world is
     signal s_serial_out    : std_logic;
     signal s_busy          : std_logic;
     
-    signal s_byte_counter         : integer range 0 to 13 := 0;
+    signal s_byte_counter         : integer range 0 to 14 := 0;
     
 begin
     
@@ -63,11 +64,13 @@ begin
             if(reset = '1') then
                 s_byte_counter <= 0;
                 s_data_valid <= '0';
+                o_done <= '0';
             else
                 case s_byte_counter is
                     when 0 =>
-                        if(i_start <= '1') then
+                        if(i_start = '1') then
                             s_byte_counter <= 1;
+                            o_done <= '0';
                         end if;
                     when 1 =>
                         s_data_in <= x"68";
@@ -136,21 +139,30 @@ begin
                             s_byte_counter <= s_byte_counter + 1;
                         end if;
                     when 12 =>
-                        s_data_in <= x"0a";
+                        s_data_in <= x"0d";
                         s_data_valid <= '1';
                         if(s_data_done = '1') then
                             s_byte_counter <= s_byte_counter + 1;
                         end if;
                     when 13 =>
+                        s_data_in <= x"0a";
+                        s_data_valid <= '1';
+                        if(s_data_done = '1') then
+                            s_byte_counter <= s_byte_counter + 1;
+                        end if;
+                    when 14 =>
                         o_done <= '1';
+                        s_data_valid <= '0';
+                        s_byte_counter <= 0;
                     when others =>
-                        s_byte_counter <= 1;
+                        s_byte_counter <= 0;
                 end case;
             end if;
         end if;
     end process;
     
     o_serial_out        <= s_serial_out;
+    o_busy              <= s_busy;
     
 
 
