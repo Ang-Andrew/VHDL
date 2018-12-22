@@ -7,9 +7,9 @@ ifeq ($(OS),Msys)
 WPWD=$(shell sh -c 'pwd -W')
 endif
 
-VHDL_SOURCES = $(WPWD)/../source/lfsr.vhd
-TOPLEVEL := lfsr
-MODULE   := test_lfsr
+VHDL_SOURCES = $(WPWD)/../source/vga_controller.vhd
+TOPLEVEL := vga_controller
+MODULE   := test_vga_controller
 
 include $(COCOTB)/makefiles/Makefile.inc
 include $(COCOTB)/makefiles/Makefile.sim

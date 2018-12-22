@@ -18,11 +18,7 @@ def vga_controller_test(dut):
     dut.reset <= 0
     
     
-    yield RisingEdge(dut.o_done)
-
-    # Print out serial stream out
-    
-    yield Timer(2)
+    yield RisingEdge(dut.o_vsync)
     
     print('Simulation ended')
     
