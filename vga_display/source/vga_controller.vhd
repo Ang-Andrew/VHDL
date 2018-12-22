@@ -26,8 +26,8 @@ end vga_controller;
 
 architecture Behavioral of vga_controller is
         
-        signal s_v_counter     : unsigned(9 downto 0) := (others => '0');
-        signal s_h_counter     : unsigned(9 downto 0) := (others => '0');
+        signal s_v_reg, s_v_counter     : unsigned(9 downto 0) := (others => '0');
+        signal s_h_reg, s_h_counter     : unsigned(9 downto 0) := (others => '0');
         signal s_h_done        : std_logic;
         signal s_v_done        : std_logic;
         signal s_frame_counter   : integer range 0 to 60 := 0;
@@ -41,7 +41,7 @@ begin
             if(s_h_done = '1') then
                 s_h_counter <= (others => '0');
             else
-                s_h_counter <= s_h_counter + 1;
+                s_h_counter <= s_h_reg + 1;
             end if;        
         end if;
     end process;
@@ -53,21 +53,24 @@ begin
             if(s_v_done = '1') then 
                 s_v_counter <= (others => '0');
             else 
-                s_v_counter <= s_v_counter + 1;
+                s_v_counter <= s_v_reg + 1;
             end if;
         end if;
     end process;
     
     -- synchronous reset
---    process(clock,reset) is
---    begin
---        if(rising_edge(clock)) then
---            if(reset = '1') then
---                s_v_counter <= (others => '0');
---                s_h_counter <= (others => '0');
---            end if;
---        end if;
---    end process;
+    process(clock,reset) is
+    begin
+        if(rising_edge(clock)) then
+            if(reset = '1') then
+                s_v_reg <= (others => '0');
+                s_h_reg <= (others => '0');
+            else
+                s_v_reg <= s_v_counter;
+                s_h_reg <= s_h_counter;
+            end if;
+        end if;
+    end process;
     
     -- combinatorial logic
     
