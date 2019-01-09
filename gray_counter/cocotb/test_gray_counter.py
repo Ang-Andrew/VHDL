@@ -17,13 +17,28 @@ def gray_counter_test(dut):
     yield Timer(100)
     dut.reset <= 0
     
-    # Wait until output is 0b1000 gray
-   
+    # Wait until output is 0b1000 gray or wait until counter reaches 1000
     
-    print('Simulation ended')
+    counter = 0
+    success = 0;
     
+    while True:
+        value = yield get_signal(dut.clock,dut.o_gray)
+        if value == 0b1000:
+            success = 1
+            break
+        elif counter == 999:
+            break
+        else:
+            counter += 1;
     
-    
-  
-
+    if success == 1:
+        print('Gray code done')
+    else:
+        print('Simulation failed')
         
+@cocotb.coroutine
+def get_signal(clk,signal):
+    
+    yield RisingEdge(clk)
+    return signal.value

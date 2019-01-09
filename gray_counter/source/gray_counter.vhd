@@ -33,6 +33,7 @@ begin
                 s_g_reg <= (others => '0');
             else
                 s_g_reg <= s_g_next;
+	    end if;
         end if;
     end process;
     
@@ -40,7 +41,7 @@ begin
     s_binary <= s_g_reg xor ('0' & s_binary(3 downto 1));
     
     -- increment the binary value
-    s_binary_increment <= std_logic_vector((unsigned)s_binary + 1));
+    s_binary_increment <= std_logic_vector(unsigned(s_binary) + 1);
     
     -- convert binary increment to gray
     s_g_next <= s_binary_increment xor ('0' & s_binary_increment(3 downto 1));
@@ -49,4 +50,4 @@ begin
     o_gray <= s_g_reg;
 
 
-end architecture rtl;
+end Behavioral;

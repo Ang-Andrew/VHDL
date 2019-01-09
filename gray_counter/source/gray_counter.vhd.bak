@@ -1,0 +1,53 @@
+--********************************************************************************************************************--
+--! @file
+--! @brief File Description
+--! Copyright&copy - YOUR COMPANY NAME
+--********************************************************************************************************************--
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+--! Entity/Package Description
+entity gray_counter is
+    port (
+        clock           : in std_logic;
+        reset           : in std_logic;
+        o_gray          : out std_logic_vector(3 downto 0)
+    );
+end entity gray_counter;
+
+architecture Behavioral of gray_counter is
+    
+    signal s_g_reg                      : std_logic_vector(3 downto 0) := (others => '0');
+    signal s_g_next                     : std_logic_vector(3 downto 0);
+    signal s_binary                     : std_logic_vector(3 downto 0);
+    signal s_binary_increment           : std_logic_vector(3 downto 0);
+    
+    
+begin
+    
+    process(clock,reset) is
+    begin
+        if(rising_edge(clock)) then
+            if(reset = '1') then
+                s_g_reg <= (others => '0');
+            else
+                s_g_reg <= s_g_next;
+	    end if;
+        end if;
+    end process;
+    
+    -- convert gray code to binary
+    s_binary <= s_g_reg xor ('0' & s_binary(3 downto 1));
+    
+    -- increment the binary value
+    s_binary_increment <= std_logic_vector((unsigned)s_binary + 1);
+    
+    -- convert binary increment to gray
+    s_g_next <= s_binary_increment xor ('0' & s_binary_increment(3 downto 1));
+    
+    -- output
+    o_gray <= s_g_reg;
+
+
+end architecture rtl;
